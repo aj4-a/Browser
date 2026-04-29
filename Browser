@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExtPrint3r</title>
-    <meta name="description" content="ExtPrint3r - Extension killer + Scramjet proxy browser">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap');
         *{margin:0;padding:0;box-sizing:border-box;font-family:"Roboto",sans-serif}
@@ -35,16 +34,16 @@
         .extension-container button{background:0 0;color:#8ab4f8;font-weight:600;border:1px solid #8ab4f8;border-radius:20px;padding:8px 20px;cursor:pointer;align-self:flex-end;transition:all .2s;font-size:13px}
         .extension-container button:hover{background:#8ab4f8;color:#1e1f22}
         .extension-status{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:#4caf50}
-        .extension-status.dead{background:#f44336}
         .url-bar{display:flex;gap:10px;margin-bottom:16px}
         .url-bar input{flex:1;padding:12px 16px;border:1px solid #38393b;border-radius:25px;background:#292a2d;color:#fff;font-size:14px;outline:0;transition:border-color .2s}
         .url-bar input:focus{border-color:#8ab4f8}
-        .url-bar button{background:#8ab4f8;color:#1e1f22;border:none;border-radius:25px;padding:12px 28px;font-weight:600;cursor:pointer;transition:all .2s}
-        .url-bar button:hover{background:#6a94d8}
+        .url-bar button, .settings-group button{background:#8ab4f8;color:#1e1f22;border:none;border-radius:8px;padding:10px 20px;font-weight:600;cursor:pointer;transition:all .2s}
+        .url-bar button:hover, .settings-group button:hover{background:#6a94d8}
         .settings-group{margin-bottom:24px;padding:20px;background:#292a2d;border-radius:12px;border:1px solid #38393b}
         .settings-group label{display:block;margin-bottom:10px;font-size:14px;color:#c4c7c5}
         .settings-group input[type=range]{width:100%;margin:8px 0;accent-color:#8ab4f8}
-        .settings-group .range-value{color:#8ab4f8;font-weight:600}
+        .settings-group input[type=text], .settings-group input[type=url], .settings-group select{width:100%;padding:10px;background:#1e1f22;color:#fff;border:1px solid #38393b;border-radius:8px;font-size:14px;margin-bottom:10px}
+        .settings-group input[type=file]{margin-bottom:10px;color:#c4c7c5}
         input[type=checkbox]{accent-color:#8ab4f8;width:18px;height:18px;margin-right:8px}
         .kill-badge{display:inline-block;background:#f44336;color:#fff;border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;margin-left:8px}
         .modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.7);z-index:999;display:flex;justify-content:center;align-items:center}
@@ -57,6 +56,8 @@
         .modal-footer{display:flex;justify-content:center;padding:16px 20px}
         .modal-footer button{background:#8ab4f8;color:#1e1f22;border:none;border-radius:25px;padding:12px 40px;font-weight:600;font-size:15px;cursor:pointer;transition:all .2s}
         .modal-footer button:hover{background:#6a94d8;transform:scale(1.03)}
+        .footer-note{font-size:0.9rem;text-align:center;color:#aaa;margin-top:15px}
+        .footer-note a{color:#8ab4f8;text-decoration:none}
     </style>
 </head>
 <body>
@@ -67,15 +68,30 @@
         <div class="option" data-name="settings-tab"><span class="icon">⚙️</span> Settings</div>
     </div>
     <div class="nav-section"><div class="nav-label">Browse</div>
-        <div class="option" data-name="scramjet-tab"><span class="icon">🌐</span> Scramjet Browser</div>
+        <div class="option" data-name="scramjet-tab"><span class="icon">🌐</span> Scramjet</div>
+        <div class="option" data-name="iframe-tab"><span class="icon">🖼️</span> iFrame</div>
+        <div class="option" data-name="urlproxy-tab"><span class="icon">🔗</span> URL Proxy</div>
+        <div class="option" data-name="worker-tab"><span class="icon">⚡</span> SW Proxy</div>
+        <div class="option" data-name="browser-tab"><span class="icon">🧩</span> About:Blank</div>
+        <div class="option" data-name="wstunnel-tab"><span class="icon">🔌</span> WS Tunnel</div>
+        <div class="option" data-name="doh-tab"><span class="icon">🔒</span> DNS/DoH</div>
+    </div>
+    <div class="nav-section"><div class="nav-label">Tools</div>
+        <div class="option" data-name="bookmarklet-tab"><span class="icon">📌</span> Bookmarklets</div>
+        <div class="option" data-name="quicklinks-tab"><span class="icon">⭐</span> Quick Links</div>
+        <div class="option" data-name="cloaker-tab"><span class="icon">🕶️</span> Tab Cloaker</div>
+        <div class="option" data-name="cookies-tab"><span class="icon">🍪</span> Cookie Editor</div>
+        <div class="option" data-name="ua-tab"><span class="icon">📱</span> UA Spoofer</div>
+        <div class="option" data-name="mask3r-tab"><span class="icon">🎭</span> Cloaked File</div>
     </div>
     <div class="nav-section"><div class="nav-label">Info</div>
         <div class="option" data-name="about-tab"><span class="icon">ℹ️</span> About</div>
     </div>
-    <footer>Made by <a href="https://github.com/Blobby-Boi/" target="_blank">Blobby Boi</a><br><span style="font-size:11px;">+ Scramjet Integration</span></footer>
+    <footer>Made by <a href="https://github.com/Blobby-Boi/" target="_blank">Blobby Boi</a><br><span style="font-size:11px;">+ Multi-Tool</span></footer>
 </div>
 
 <div class="main-content">
+    <!-- PRINTER TAB -->
     <div id="printer-tab" class="tab-content active">
         <h2>All Extensions <span id="kill-counter" class="kill-badge" style="display:none">0 Killed</span></h2>
         <p style="color:#6b6e6d;margin-bottom:20px;font-size:14px;">Detected school extensions. Click a button to kill it.</p>
@@ -86,34 +102,30 @@
         </div>
     </div>
 
+    <!-- SETTINGS TAB -->
     <div id="settings-tab" class="tab-content">
         <h2>Settings</h2>
         <div class="settings-group">
             <label><input type="checkbox" id="show-all-extensions"> Show All Extensions (even undetected)</label>
-            <p style="font-size:12px;color:#6b6e6d;margin-left:26px;">When enabled, all extensions will be listed regardless.</p>
         </div>
         <div class="settings-group">
             <label for="iframe-count">Iframe Flood Amount</label>
             <input type="range" min="100" max="10000" value="2500" step="100" id="iframe-count">
             <span style="color:#8ab4f8;font-weight:600;" id="iframe-count-display">2500</span>
             <span style="color:#6b6e6d;font-size:13px;"> iframes</span>
-            <p style="font-size:12px;color:#6b6e6d;margin-top:8px;">More iframes = more likely to freeze. Too many may crash your browser.</p>
         </div>
         <div class="settings-group">
             <label><input type="checkbox" id="developer-mode"> Developer Mode</label>
-            <p style="font-size:12px;color:#6b6e6d;margin-left:26px;">For advanced users only.</p>
             <div id="dev-settings" style="display:none;margin-top:15px;">
-                <button id="add-ext" style="background:#8ab4f8;color:#1e1f22;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;font-weight:600;">+ Add Custom Extension</button>
+                <button id="add-ext">+ Add Custom Extension</button>
             </div>
         </div>
     </div>
 
+    <!-- SCRAMJET TAB -->
     <div id="scramjet-tab" class="tab-content">
         <h2>🌐 Scramjet Proxy Browser</h2>
-        <p style="color:#c4c7c5;font-size:14px;margin-bottom:8px;">Kill extensions first, then browse freely through Scramjet.</p>
-        <div class="settings-group" style="margin-bottom:20px;">
-            <p style="font-size:13px;color:#c4c7c5;"><b>Workflow:</b><br>1. Switch to The Exploit tab and kill extensions<br>2. Enter a URL below to browse through Scramjet</p>
-        </div>
+        <p style="color:#c4c7c5;font-size:14px;margin-bottom:8px;">Kill extensions first, then browse freely.</p>
         <div class="url-bar">
             <input type="url" id="scramjet-url" placeholder="https://www.google.com" value="https://www.google.com">
             <button onclick="launchScramjet()">🚀 Go</button>
@@ -121,26 +133,184 @@
         <div style="margin-top:10px;">
             <label style="font-size:13px;color:#c4c7c5;">Proxy Server: <input type="text" id="scramjet-server" value="http://localhost:1337" style="width:200px;background:#292a2d;border:1px solid #38393b;color:#fff;padding:6px 10px;border-radius:6px;font-size:13px;margin-left:8px;"></label>
         </div>
-        <div class="settings-group" style="margin-top:20px;">
-            <h3 style="margin-bottom:10px;color:#fff;">🖥️ Scramjet Setup</h3>
-            <div style="background:#1e1f22;padding:15px;border-radius:8px;font-family:monospace;font-size:13px;color:#c4c7c5;">
-                <p># Install and start Scramjet:</p>
-                <p style="color:#8ab4f8;">git clone https://github.com/MercuryWorkshop/Scramjet-App</p>
-                <p style="color:#8ab4f8;">cd Scramjet-App && pnpm install && pnpm start</p>
-                <p style="margin-top:8px;"># Runs on http://localhost:1337</p>
+    </div>
+
+    <!-- IFRAME TAB -->
+    <div id="iframe-tab" class="tab-content">
+        <h2>🖼️ iFrame Browser</h2>
+        <div class="url-bar">
+            <input type="url" id="iframe-url" placeholder="https://example.com" value="https://www.bing.com">
+            <button onclick="loadIframe()">🌐 Load</button>
+        </div>
+        <div style="margin:10px 0;"><label><input type="checkbox" id="iframe-sandbox" checked> Sandbox mode</label></div>
+        <iframe id="browser-frame" style="width:100%;height:600px;border:1px solid #38393b;border-radius:12px;background:#fff;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+    </div>
+
+    <!-- URL PROXY TAB -->
+    <div id="urlproxy-tab" class="tab-content">
+        <h2>🔗 URL-Based Proxies</h2>
+        <div class="url-bar">
+            <input type="url" id="proxy-url" placeholder="https://example.com" value="https://httpbin.org/get">
+            <button onclick="proxyViaURL()">🔗 Proxy</button>
+        </div>
+        <div class="settings-group">
+            <label>Proxy Service:</label>
+            <select id="proxy-service">
+                <option value="https://api.allorigins.win/raw?url=">AllOrigins</option>
+                <option value="https://corsproxy.io/?">CORS Proxy</option>
+                <option value="https://api.codetabs.com/v1/proxy?quest=">CodeTabs</option>
+            </select>
+        </div>
+        <div id="proxy-result" style="margin-top:15px;padding:15px;background:#292a2d;border-radius:8px;min-height:200px;max-height:500px;overflow:auto;font-family:monospace;font-size:13px;color:#c4c7c5;white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- SERVICE WORKER TAB -->
+    <div id="worker-tab" class="tab-content">
+        <h2>⚡ Service Worker Proxy</h2>
+        <div class="settings-group">
+            <p>Status: <span id="sw-status" style="color:#f44336;">● Not Registered</span></p>
+            <button id="sw-register-btn" onclick="registerSW()">📡 Register Service Worker</button>
+            <button onclick="unregisterSW()" style="background:#f44336;color:#fff;margin-left:8px;">⏹️ Unregister</button>
+        </div>
+    </div>
+
+    <!-- ABOUT:BLANK TAB -->
+    <div id="browser-tab" class="tab-content">
+        <h2>🧩 About:Blank Browser</h2>
+        <div class="url-bar">
+            <input type="url" id="blank-url" placeholder="https://example.com" value="https://www.wikipedia.org">
+            <button onclick="openAboutBlank()">🧩 Open</button>
+        </div>
+    </div>
+
+    <!-- WS TUNNEL TAB -->
+    <div id="wstunnel-tab" class="tab-content">
+        <h2>🔌 WebSocket Tunnel</h2>
+        <div class="settings-group">
+            <label>WebSocket Server:</label>
+            <input type="url" id="ws-server" value="wss://echo.websocket.org">
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+            <button onclick="wsConnect()" style="background:#4caf50;">🟢 Connect</button>
+            <button onclick="wsDisconnect()" style="background:#f44336;">🔴 Disconnect</button>
+            <span id="ws-status" style="color:#f44336;align-self:center;">● Disconnected</span>
+        </div>
+        <div class="url-bar">
+            <input type="url" id="ws-target-url" placeholder="https://example.com" value="https://httpbin.org/get">
+            <button onclick="wsTunnelFetch()">🔌 Tunnel</button>
+        </div>
+        <div id="ws-result" style="padding:15px;background:#292a2d;border-radius:8px;min-height:100px;font-family:monospace;font-size:13px;color:#c4c7c5;white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- DNS/DOH TAB -->
+    <div id="doh-tab" class="tab-content">
+        <h2>🔒 DNS-over-HTTPS</h2>
+        <div class="settings-group">
+            <label>DoH Resolver:</label>
+            <select id="doh-resolver">
+                <option value="https://cloudflare-dns.com/dns-query">Cloudflare</option>
+                <option value="https://dns.google/dns-query">Google</option>
+            </select>
+        </div>
+        <div class="url-bar">
+            <input type="text" id="doh-domain" placeholder="example.com" value="google.com">
+            <button onclick="resolveDNS()">🔍 Resolve</button>
+        </div>
+        <div id="doh-result" style="padding:15px;background:#292a2d;border-radius:8px;min-height:200px;font-family:monospace;font-size:13px;color:#c4c7c5;white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- BOOKMARKLET TAB -->
+    <div id="bookmarklet-tab" class="tab-content">
+        <h2>📌 Bookmarklet Generator</h2>
+        <div class="settings-group"><div id="bookmarklet-list" style="display:flex;flex-direction:column;gap:12px;"></div></div>
+    </div>
+
+    <!-- QUICK LINKS TAB -->
+    <div id="quicklinks-tab" class="tab-content">
+        <h2>⭐ Quick Links</h2>
+        <div class="settings-group"><input type="text" id="quicklinks-search" placeholder="Filter links..." style="width:100%;padding:10px;background:#1e1f22;color:#fff;border:1px solid #38393b;border-radius:8px;margin-bottom:10px;" oninput="filterQuickLinks()"></div>
+        <div id="quicklinks-container" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+    </div>
+
+    <!-- TAB CLOAKER TAB -->
+    <div id="cloaker-tab" class="tab-content">
+        <h2>🕶️ Tab Cloaker</h2>
+        <div class="settings-group">
+            <label>Presets:</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <button onclick="cloakTab('Google Docs','https://docs.google.com/favicon.ico')">📄 Docs</button>
+                <button onclick="cloakTab('Google Classroom','https://classroom.google.com/favicon.ico')">🏫 Classroom</button>
+                <button onclick="cloakTab('Khan Academy','https://www.khanacademy.org/favicon.ico')">🎓 Khan</button>
+                <button onclick="cloakTab('Desmos','https://www.desmos.com/favicon.ico')">📊 Desmos</button>
+                <button onclick="resetCloak()" style="background:#f44336;color:#fff;">🔄 Reset</button>
             </div>
         </div>
     </div>
 
+    <!-- COOKIE EDITOR TAB -->
+    <div id="cookies-tab" class="tab-content">
+        <h2>🍪 Cookie Editor</h2>
+        <div style="display:flex;gap:10px;margin-bottom:15px;">
+            <button onclick="loadCookies()">🍪 Load</button>
+            <button onclick="deleteAllCookies()" style="background:#f44336;color:#fff;">🗑️ Delete All</button>
+        </div>
+        <div id="cookie-list"></div>
+    </div>
+
+    <!-- UA SPOOFER TAB -->
+    <div id="ua-tab" class="tab-content">
+        <h2>📱 User-Agent Spoofer</h2>
+        <div class="settings-group"><p>Current: <code id="current-ua" style="font-size:12px;word-break:break-all;"></code></p></div>
+        <div class="settings-group">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <button onclick="spoofUA('chrome-win')">🖥️ Chrome Win</button>
+                <button onclick="spoofUA('firefox')">🦊 Firefox</button>
+                <button onclick="spoofUA('iphone')">📱 iPhone</button>
+                <button onclick="resetUA()" style="background:#f44336;color:#fff;">🔄 Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASK3r TAB -->
+    <div id="mask3r-tab" class="tab-content">
+        <h2>🎭 Cloaked File Generator (Mask3r)</h2>
+        <p style="color:#c4c7c5;font-size:14px;margin-bottom:15px;">Creates an HTML file that embeds any URL with a custom title and favicon. Looks like a school page.</p>
+        
+        <div class="settings-group">
+            <label>URL to Embed:</label>
+            <input type="text" id="mask3r-url" placeholder="Enter the URL you want to embed">
+            
+            <label>Page Title:</label>
+            <input type="text" id="mask3r-title" placeholder="Enter the title for the file tab">
+            
+            <label>Favicon Image (optional):</label>
+            <input type="file" id="mask3r-favicon" accept="image/*">
+            
+            <label>Pre-saved Option:</label>
+            <select id="mask3r-preset">
+                <option value="">Select an option</option>
+                <option value="google-classroom">Google Classroom</option>
+                <option value="clever">Clever</option>
+                <option value="gmail">Gmail</option>
+                <option value="schoology">Schoology</option>
+                <option value="googledocs">Google Docs</option>
+                <option value="googleslides">Google Slides</option>
+                <option value="ixl">IXL</option>
+                <option value="kahoot">Kahoot</option>
+                <option value="wikipedia">Wikipedia</option>
+            </select>
+            
+            <button onclick="generateMask3r()">🎭 Download Cloaked File</button>
+        </div>
+        <div class="footer-note">Made by <a href="https://github.com/Blobby-Boi/" target="_blank">Blobby Boi</a> | Contributed by FMODE & CBass92</div>
+    </div>
+
+    <!-- ABOUT TAB -->
     <div id="about-tab" class="tab-content">
-        <h2>About ExtPrint3r</h2>
-        <p style="line-height:1.7;color:#c4c7c5;max-width:700px;"><b>ExtPrint3r</b> is an exploit created by <a href="https://github.com/Blobby-Boi/" style="color:#9dbae9;" target="_blank">Blobby Boi</a> that recreates the LTMEAT Print method by flooding iframes and printing the page to freeze/kill Chrome extensions.</p>
-        <p style="line-height:1.7;color:#c4c7c5;max-width:700px;margin-top:15px;"><b>Scramjet</b> integration allows browsing through a WebAssembly-based proxy after extensions are neutralized.</p>
-        <div style="border-top:1px solid #38393b;margin:25px 0;padding-top:20px;"></div>
-        <h3>Contributors</h3>
-        <div id="contributor-list" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;"></div>
-        <div style="margin-top:30px;padding:15px;background:#292a2d;border-radius:8px;border-left:3px solid #f44336;">
-            <p style="font-size:13px;color:#c4c7c5;">⚠️ <b>Disclaimer:</b> Educational purposes only. Use responsibly and at your own risk.</p>
+        <h2>About</h2>
+        <p style="line-height:1.7;color:#c4c7c5;"><b>ExtPrint3r</b> + <b>Mask3r</b> + multi-method proxy browser. Educational purposes only.</p>
+        <div style="margin-top:20px;padding:15px;background:#292a2d;border-radius:8px;border-left:3px solid #f44336;">
+            <p style="font-size:13px;color:#c4c7c5;">⚠️ Use responsibly and at your own risk.</p>
         </div>
     </div>
 </div>
@@ -152,7 +322,7 @@
     if(m&&parseInt(m[1])>=135){
         var o=document.createElement('div');
         o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#1e1f22;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-        o.innerHTML='<h3 style="color:white;margin-bottom:20px;">ChromeOS v135+ detected. This exploit may not work.</h3><button style="padding:12px 30px;background:#8ab4f8;color:#1e1f22;border:none;border-radius:25px;cursor:pointer;font-weight:600;" onclick="this.parentElement.remove()">Load Anyway</button>';
+        o.innerHTML='<h3 style="color:white;margin-bottom:20px;">ChromeOS v135+ detected. May not work.</h3><button style="padding:12px 30px;background:#8ab4f8;color:#1e1f22;border:none;border-radius:25px;cursor:pointer;font-weight:600;" onclick="this.parentElement.remove()">Load Anyway</button>';
         document.body.appendChild(o);
     }
 })();
@@ -171,24 +341,22 @@ document.querySelectorAll('.option').forEach(function(b){
 document.getElementById('iframe-count').addEventListener('input',function(){
     document.getElementById('iframe-count-display').textContent=this.value;
 });
-
 document.getElementById('developer-mode').addEventListener('change',function(){
     if(this.checked){
-        if(!confirm('Enable Developer Mode? Advanced users only.')){this.checked=false;return}
+        if(!confirm('Enable Developer Mode?')){this.checked=false;return}
         document.getElementById('dev-settings').style.display='block';
         document.getElementById('add-ext').onclick=function(){
-            var n=prompt('Extension Name:'),u=prompt('Frame URL:'),i=prompt('Icon URL (optional):');
-            if(n&&u)tryAddExtension(n,i||'',u).then(function(s){alert(s?'Added!':'Failed')});
+            var n=prompt('Extension Name:'),u=prompt('Frame URL:');
+            if(n&&u)tryAddExtension(n,'',u).then(function(s){alert(s?'Added!':'Failed')});
         };
     }else{document.getElementById('dev-settings').style.display='none'}
 });
-
 document.getElementById('show-all-extensions').addEventListener('change',function(){
     document.getElementById('div-container').innerHTML='';
     loadExtensions();
 });
 
-// ============ EXTENSION DATABASE ============
+// ============ EXTENSION DB ============
 var extensions={
     "Securly":"chrome-extension://iheobagjkfklnlikgihanlhcddjoihkg/fonts/Metropolis.css",
     "GoGuardian":"chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/icons/enabled-dark-128.png",
@@ -203,21 +371,14 @@ var extensions={
     "Lightspeed Filter":"chrome-extension://adkcpkpghahmbopkjchobieckeoaoeem/blocked-image-search.png",
     "Lightspeed Classroom":"chrome-extension://kkbmdgjggcdajckdlbngdjonpchpaiea/assets/icon-classroom-128.png"
 };
-
 var killCount=0,defaultIcon='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect width="36" height="36" rx="8" fill="#38393b"/><text x="18" y="24" text-anchor="middle" fill="#8e918f" font-size="18">E</text></svg>');
 
-// ============ EXTENSION SCANNER ============
 function checkExtensionURL(u){
     return fetch(u).then(function(r){return r.ok}).catch(function(){
         return fetch(u,{method:'HEAD'}).then(function(r){return r.ok}).catch(function(){return false});
     });
 }
-
-function getExtensionId(u){
-    var m=u.match(/^chrome-extension:\/\/([^\/]+)/);
-    return m?m[1]:'Unknown';
-}
-
+function getExtensionId(u){var m=u.match(/^chrome-extension:\/\/([^\/]+)/);return m?m[1]:'Unknown';}
 function tryAddExtension(n,i,u){
     var s=document.getElementById('show-all-extensions').checked;
     function add(){
@@ -231,13 +392,11 @@ function tryAddExtension(n,i,u){
         var btn=document.createElement('button');btn.textContent='Disable';
         btn.onclick=function(){createPopup(n,img.src,u,getExtensionId(u))};
         d.appendChild(btn);d.appendChild(id);d.appendChild(info);
-        document.getElementById('div-container').appendChild(d);
-        return true;
+        document.getElementById('div-container').appendChild(d);return true;
     }
     if(s)return Promise.resolve(add());
     return checkExtensionURL(u).then(function(ok){if(ok)return add();return false});
 }
-
 function loadExtensions(){
     var c=document.getElementById('div-container');c.innerHTML='';
     var found=false;
@@ -248,75 +407,123 @@ function loadExtensions(){
             if(found)document.getElementById('kill-counter').style.display='inline-block';
             return;
         }
-        tryAddExtension(keys[idx],'',extensions[keys[idx]]).then(function(r){
-            if(r)found=true;
-            processNext(idx+1);
-        });
+        tryAddExtension(keys[idx],'',extensions[keys[idx]]).then(function(r){if(r)found=true;processNext(idx+1)});
     }
     processNext(0);
 }
 
-// ============ THE PRINT3R EXPLOIT ============
+// ============ THE PRINT3r ============
 function createIframesAndPrint(extPage,extIcon){
-    var w=window.open('','_blank');
-    w.document.title='The Print3r';
-    w.document.body.style.backgroundColor='#1e1f22';
+    var w=window.open('','_blank');w.document.title='The Print3r';w.document.body.style.backgroundColor='#1e1f22';
     w.document.body.innerHTML='<div id="ld" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:20px;text-align:center;"><div style="border:4px solid rgba(255,255,255,0.3);border-top:4px solid white;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 10px;"></div>Loading...</div><style>@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>';
-    var sc=w.document.createElement('script');sc.text='setTimeout(function(){window.close()},5000)';w.document.body.appendChild(sc);
+    w.document.body.appendChild(document.createElement('script')).text='setTimeout(function(){window.close()},5000)';
     setTimeout(function(){
         var n=parseInt(document.getElementById('iframe-count').value);
-        for(var i=0;i<n;i++){
-            var f=document.createElement('iframe');f.src=extPage;f.width='25';f.height='25';f.style.border='none';
-            w.document.body.appendChild(f);
-        }
+        for(var i=0;i<n;i++){var f=document.createElement('iframe');f.src=extPage;f.width='25';f.height='25';f.style.border='none';w.document.body.appendChild(f)}
         var ld=w.document.getElementById('ld');if(ld)ld.remove();
-        w.print();
-        killCount++;
-        document.getElementById('kill-counter').textContent=killCount+' Killed';
-        document.getElementById('kill-counter').style.display='inline-block';
+        w.print();killCount++;
+        document.getElementById('kill-counter').textContent=killCount+' Killed';document.getElementById('kill-counter').style.display='inline-block';
     },1000);
 }
-
-// ============ POPUP MODAL ============
 function createPopup(extName,extIcon,extPage,extId){
     var ov=document.createElement('div');ov.className='modal-overlay';
-    ov.innerHTML='<div class="modal"><div class="modal-header"><span>💀 '+extName+'</span><span class="close-btn">&times;</span></div><div class="modal-body"><p>Open this URL in a new tab:</p><span class="url-highlight">chrome://extensions?id='+extId+'</span><p style="margin-top:12px;">Come back and click <b>The Print3r</b>. When popup opens, press <b>Ctrl+Tab</b> and spam <b>"Allow Access to file URLs"</b> for ~5 seconds. Close that tab, return to printer window, press <b>Cancel</b> on print dialog.</p><p style="margin-top:12px;color:#8ab4f8;">If done right, <b>'+extName+'</b> will be killed.</p></div><div class="modal-footer"><button id="pb">⚡ The Print3r</button></div></div>';
+    ov.innerHTML='<div class="modal"><div class="modal-header"><span>💀 '+extName+'</span><span class="close-btn">&times;</span></div><div class="modal-body"><p>Open this URL:</p><span class="url-highlight">chrome://extensions?id='+extId+'</span><p style="margin-top:12px;">Come back, click <b>The Print3r</b>. Press <b>Ctrl+Tab</b> and spam <b>"Allow Access to file URLs"</b> for ~5 seconds. Close tab, return to printer, press <b>Cancel</b>.</p></div><div class="modal-footer"><button id="pb">⚡ The Print3r</button></div></div>';
     document.body.appendChild(ov);
-    ov.querySelector('.close-btn').onclick=function(){ov.remove()};
-    ov.onclick=function(e){if(e.target===ov)ov.remove()};
-    ov.querySelector('#pb').onclick=function(){
-        createIframesAndPrint(extPage,extIcon);
-        setTimeout(function(){
-            ov.querySelector('.modal-body').innerHTML='<p style="text-align:center;font-size:18px;color:#4caf50;">✅ '+extName+' has been killed!</p>';
-            ov.querySelector('.modal-footer').remove();
-        },500);
-    };
+    ov.querySelector('.close-btn').onclick=function(){ov.remove()};ov.onclick=function(e){if(e.target===ov)ov.remove()};
+    ov.querySelector('#pb').onclick=function(){createIframesAndPrint(extPage,extIcon);setTimeout(function(){ov.querySelector('.modal-body').innerHTML='<p style="text-align:center;font-size:18px;color:#4caf50;">✅ '+extName+' killed!</p>';ov.querySelector('.modal-footer').remove()},500)};
 }
 
-// ============ SCRAMJET LAUNCHER ============
-function launchScramjet(){
-    var u=document.getElementById('scramjet-url').value;
-    var s=document.getElementById('scramjet-server').value;
-    if(!u)return alert('Enter a URL first');
-    window.open(s+'/service/'+encodeURIComponent(u),'_blank');
-}
+// ============ SCRAMJET ============
+function launchScramjet(){var u=document.getElementById('scramjet-url').value,s=document.getElementById('scramjet-server').value;if(!u)return alert('Enter URL');window.open(s+'/service/'+encodeURIComponent(u),'_blank')}
 
-// ============ CONTRIBUTORS ============
-function loadContributors(){
-    fetch('https://api.github.com/repos/Blobby-Boi/ExtPrint3r/contributors').then(function(r){return r.json()}).then(function(c){
-        var l=document.getElementById('contributor-list');
-        c.forEach(function(x){
-            var a=document.createElement('a');a.href=x.html_url;a.target='_blank';a.style.display='inline-block';
-            var img=document.createElement('img');img.src=x.avatar_url;
-            img.style.cssText='width:45px;height:45px;border-radius:50%;border:2px solid #444;';img.title=x.login;
-            a.appendChild(img);l.appendChild(a);
-        });
-    }).catch(function(){});
+// ============ IFRAME ============
+function loadIframe(){var u=document.getElementById('iframe-url').value,f=document.getElementById('browser-frame'),s=document.getElementById('iframe-sandbox').checked;if(!u)return alert('Enter URL');if(s)f.setAttribute('sandbox','allow-same-origin allow-scripts allow-forms allow-popups');else f.removeAttribute('sandbox');f.src=u}
+
+// ============ URL PROXY ============
+function proxyViaURL(){var u=document.getElementById('proxy-url').value,s=document.getElementById('proxy-service').value,r=document.getElementById('proxy-result');if(!u)return;r.textContent='Loading...';fetch(s+encodeURIComponent(u)).then(function(res){return res.text()}).then(function(d){r.textContent=d}).catch(function(e){r.textContent='Error: '+e.message})}
+
+// ============ SERVICE WORKER ============
+function registerSW(){
+    if(!('serviceWorker' in navigator))return alert('Not supported');
+    var blob=new Blob(["self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('fetch',e=>{var u=new URL(e.request.url);if(u.hostname==='localhost')return;e.respondWith(fetch(e.request))});"],{type:'application/javascript'});
+    var url=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url,{scope:'/'}).then(function(){document.getElementById('sw-status').innerHTML='<span style="color:#4caf50;">● Active</span>';document.getElementById('sw-register-btn').disabled=true;URL.revokeObjectURL(url)}).catch(function(e){alert('Failed: '+e.message)})
+}
+function unregisterSW(){navigator.serviceWorker.getRegistrations().then(function(regs){regs.forEach(function(r){r.unregister()});document.getElementById('sw-status').innerHTML='<span style="color:#f44336;">● Not Registered</span>';document.getElementById('sw-register-btn').disabled=false})}
+
+// ============ ABOUT:BLANK ============
+function openAboutBlank(){var u=document.getElementById('blank-url').value;if(!u)return;var w=window.open('about:blank','_blank','width=1200,height=800');w.document.body.innerHTML='<iframe src="'+u+'" style="width:100%;height:100vh;border:none;"></iframe>'}
+
+// ============ WS TUNNEL ============
+var ws=null;
+function wsConnect(){var s=document.getElementById('ws-server').value;ws=new WebSocket(s);ws.onopen=function(){document.getElementById('ws-status').innerHTML='<span style="color:#4caf50;">● Connected</span>'};ws.onmessage=function(e){document.getElementById('ws-result').textContent=e.data};ws.onclose=function(){document.getElementById('ws-status').innerHTML='<span style="color:#f44336;">● Disconnected</span>'};ws.onerror=function(){document.getElementById('ws-result').textContent='Error'}}
+function wsDisconnect(){if(ws)ws.close();ws=null}
+function wsTunnelFetch(){if(!ws||ws.readyState!==WebSocket.OPEN)return alert('Connect first');ws.send(JSON.stringify({type:'fetch',url:document.getElementById('ws-target-url').value}))}
+
+// ============ DNS ============
+function resolveDNS(){var d=document.getElementById('doh-domain').value,r=document.getElementById('doh-resolver').value,o=document.getElementById('doh-result');o.textContent='Resolving...';fetch(r+'?name='+encodeURIComponent(d),{headers:{'Accept':'application/dns-json'}}).then(function(res){return res.json()}).then(function(data){var txt='Domain: '+d+'\n\nIPs:\n';if(data.Answer)data.Answer.forEach(function(a){txt+='  '+a.data+'\n'});o.textContent=txt}).catch(function(e){o.textContent='Error: '+e.message})}
+
+// ============ BOOKMARKLETS ============
+(function(){var bm=[{name:'Open About:Blank',code:'javascript:var w=window.open("about:blank","_blank");w.document.body.innerHTML=\'<iframe src="https://www.bing.com" style="width:100%;height:100vh;border:none;">\';'},{name:'Edit Page',code:'javascript:document.body.contentEditable="true";alert("Editable now")'}];var l=document.getElementById('bookmarklet-list');bm.forEach(function(b){var a=document.createElement('a');a.href=b.code;a.textContent='📌 '+b.name;a.style.cssText='display:block;padding:10px 15px;background:#1e1f22;color:#8ab4f8;border-radius:8px;text-decoration:none;cursor:grab;';a.title='Drag to bookmarks';l.appendChild(a)})})();
+
+// ============ QUICK LINKS ============
+var quickLinks=[{name:'Wikipedia',url:'https://www.wikipedia.org',cat:'📚'},{name:'DuckDuckGo',url:'https://duckduckgo.com',cat:'🔍'},{name:'Cool Math Games',url:'https://www.coolmathgames.com',cat:'🎮'},{name:'1v1.LOL',url:'https://1v1.lol',cat:'🎮'},{name:'Spotify Web',url:'https://open.spotify.com',cat:'🎵'},{name:'GitHub',url:'https://github.com',cat:'💻'}];
+function renderQuickLinks(f){var c=document.getElementById('quicklinks-container');c.innerHTML='';quickLinks.forEach(function(l){if(f&&l.name.toLowerCase().indexOf(f.toLowerCase())===-1)return;var a=document.createElement('a');a.href=l.url;a.target='_blank';a.style.cssText='display:inline-block;padding:12px 20px;background:#292a2d;color:#fff;border-radius:10px;text-decoration:none;font-size:14px;border:1px solid #38393b;';a.innerHTML=l.cat+' '+l.name;c.appendChild(a)})}
+function filterQuickLinks(){renderQuickLinks(document.getElementById('quicklinks-search').value)}
+renderQuickLinks();
+
+// ============ TAB CLOAKER ============
+function cloakTab(title,icon){document.title=title;var l=document.querySelector("link[rel='icon']")||document.createElement('link');l.rel='icon';l.href=icon;if(!document.querySelector("link[rel='icon']"))document.head.appendChild(l)}
+function resetCloak(){document.title='ExtPrint3r';var l=document.querySelector("link[rel='icon']");if(l)l.remove()}
+
+// ============ COOKIE EDITOR ============
+function loadCookies(){var l=document.getElementById('cookie-list'),cookies=document.cookie.split(';').filter(function(c){return c.trim()});if(!cookies.length){l.innerHTML='<p style="color:#6b6e6d;">No cookies.</p>';return}l.innerHTML='';cookies.forEach(function(c){var p=c.trim().split('=');l.innerHTML+='<div style="display:flex;gap:10px;padding:8px;background:#1e1f22;border-radius:6px;">'+p[0]+'='+p[1]+' <button onclick="deleteCookie(\''+p[0]+'\');loadCookies()" style="background:#f44336;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;">X</button></div>'})}
+function deleteCookie(n){document.cookie=n+'=;expires=Thu,01 Jan 1970 00:00:00 UTC;path=/'}
+function deleteAllCookies(){document.cookie.split(';').forEach(function(c){document.cookie=c.split('=')[0]+'=;expires=Thu,01 Jan 1970 00:00:00 UTC;path=/'});loadCookies()}
+
+// ============ UA SPOOFER ============
+var origUA=navigator.userAgent;
+var uaDB={'chrome-win':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36','firefox':'Mozilla/5.0 (Windows NT 10.0; rv:121.0) Gecko/20100101 Firefox/121.0','iphone':'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1'};
+function spoofUA(t){if(!uaDB[t])return;Object.defineProperty(navigator,'userAgent',{get:function(){return uaDB[t]},configurable:true});document.getElementById('current-ua').textContent=uaDB[t]}
+function resetUA(){Object.defineProperty(navigator,'userAgent',{get:function(){return origUA},configurable:true});document.getElementById('current-ua').textContent=origUA}
+document.getElementById('current-ua').textContent=origUA;
+
+// ============ MASK3r ============
+var mask3rPresets={
+    "google-classroom":{title:"Home",icon:"https://www.gstatic.com/classroom/favicon.png"},
+    "clever":{title:"Clever | Portal",icon:"https://clever.com/favicon.ico"},
+    "gmail":{title:"Gmail",icon:"https://mail.google.com/favicon.ico"},
+    "schoology":{title:"Schoology",icon:"https://www.schoology.com/favicon.ico"},
+    "googledocs":{title:"Google Docs",icon:"https://docs.google.com/favicon.ico"},
+    "googleslides":{title:"Google Slides",icon:"https://slides.google.com/favicon.ico"},
+    "ixl":{title:"IXL",icon:"https://www.ixl.com/favicon.ico"},
+    "kahoot":{title:"Kahoot!",icon:"https://kahoot.com/favicon.ico"},
+    "wikipedia":{title:"Wikipedia",icon:"https://www.wikipedia.org/favicon.ico"}
+};
+document.getElementById('mask3r-preset').addEventListener('change',function(){
+    var p=mask3rPresets[this.value];
+    if(p){document.getElementById('mask3r-title').value=p.title;document.getElementById('mask3r-title').disabled=true}else{document.getElementById('mask3r-title').disabled=false;document.getElementById('mask3r-title').value=''}
+});
+function generateMask3r(){
+    var url=document.getElementById('mask3r-url').value.trim();
+    if(!url)return alert('Enter a URL');
+    if(!url.startsWith('http'))url='https://'+url;
+    var title=document.getElementById('mask3r-title').value.trim()||'My Page';
+    var favInput=document.getElementById('mask3r-favicon');
+    var preset=mask3rPresets[document.getElementById('mask3r-preset').value];
+    var faviconUrl=preset?preset.icon:'';
+    function buildAndDownload(fav){
+        var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>'+title+'</title><link rel="icon" href="'+fav+'"><style>body,html{margin:0;padding:0;height:100%;overflow:hidden;background:#111;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="'+url+'"></iframe></body></html>';
+        var blob=new Blob([html],{type:'text/html'});
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=title.replace(/\s+/g,'_')+'.html';a.click();
+    }
+    if(favInput.files.length>0){
+        var reader=new FileReader();reader.onloadend=function(){buildAndDownload(reader.result)};reader.readAsDataURL(favInput.files[0]);
+    }else{buildAndDownload(faviconUrl||'https://www.google.com/s2/favicons?sz=64&domain='+url)}
 }
 
 // ============ INIT ============
 loadExtensions();
-loadContributors();
 </script>
 </body>
 </html>
